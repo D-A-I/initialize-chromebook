@@ -1,13 +1,18 @@
 #!/bin/bash
-set -u
+set -ux
 
 echo "+-+ start setup. +-+"
 
 # package update
 
-sudo apt -y update &&
-  apt -y upgrade &&
-  apt -y dist-upgrade
+## (vivaldi)
+wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | gpg --dearmor | sudo dd of=/usr/share/keyrings/vivaldi-browser.gpg
+echo "deb [signed-by=/usr/share/keyrings/vivaldi-browser.gpg arch=$(dpkg --print-architecture)] https://repo.vivaldi.com/archive/deb/ stable main" \
+  | sudo dd of=/etc/apt/sources.list.d/vivaldi-archive.list
+
+sudo apt -y update
+sudo apt -y upgrade
+sudo apt -y dist-upgrade
 
 echo "+-+ package updated complete. +-+"
 
@@ -18,8 +23,8 @@ sudo apt -y install \
   locales-all \
   fonts-migmix
 
-sudo localectl set-locale LANG=ja_JP.UTF-8 LANGUAGE="ja_JP:ja" &&
-  . /etc/default/locale
+sudo localectl set-locale LANG=ja_JP.UTF-8 LANGUAGE="ja_JP:ja"
+. /etc/default/locale
 
 ## timezone
 sudo ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime &&
@@ -83,10 +88,22 @@ echo "+-+ default key bindings configuration complete. +-+"
 sudo apt -y install \
   emacs \
   git \
-  vivaldi
+  vivaldi-stable
 
 echo "+-+ tools installation complete. +-+"
 
-## place init.el（~/.emacs.d/init.el）
+# place init.el (~/.emacs.d/init.el)
+
+readonly _TEMP_DOTFILE_VAL=https://raw.githubusercontent.com/D-A-I/initialize-chromebook/main/.emacs.d/init.el
+readonly _TEMP_EMACS_VAL=~/.emacs.d/init.el
+_TEMP_EMACS_DIR_VAL=$(dirname ${_TEMP_EMACS_VAL})
+readonly _TEMP_EMACS_DIR_VAL
+
+## If you don't have a setting.ini, create one.
+[ ! -e "${_TEMP_EMACS_DIR_VAL}" ] && mkdir -p "${_TEMP_EMACS_DIR_VAL}"
+[ ! -e ${_TEMP_EMACS_VAL} ] && touch ${_TEMP_EMACS_VAL}
+curl ${_TEMP_DOTFILE_VAL} > ${_TEMP_EMACS_VAL}
+
+echo "+-+ emacs configuration complete. +-+"
 
 echo "+-+ please reboot. +-+"
