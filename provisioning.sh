@@ -1,20 +1,15 @@
 #!/bin/bash
 set -ux
 
-echo "+-+ start setup. +-+"
+echo "+-+-+-+ start setup. +-+-+-+"
 
 # package update
-
-## (vivaldi)
-wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | gpg --dearmor | sudo dd of=/usr/share/keyrings/vivaldi-browser.gpg
-echo "deb [signed-by=/usr/share/keyrings/vivaldi-browser.gpg arch=$(dpkg --print-architecture)] https://repo.vivaldi.com/archive/deb/ stable main" \
-  | sudo dd of=/etc/apt/sources.list.d/vivaldi-archive.list
 
 sudo apt -y update
 sudo apt -y upgrade
 sudo apt -y dist-upgrade
 
-echo "+-+ package updated complete. +-+"
+echo "+-+-+-+ package updated complete. +-+-+-+"
 
 # localization
 
@@ -28,9 +23,9 @@ sudo localectl set-locale LANG=ja_JP.UTF-8 LANGUAGE="ja_JP:ja"
 
 ## timezone
 sudo ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime &&
-  echo Asia/Tokyo >/etc/timezone
+  sudo echo Asia/Tokyo >/etc/timezone
 
-echo "+-+ localization complete. +-+"
+echo "+-+-+-+ localization complete. +-+-+-+"
 
 # IME
 
@@ -43,13 +38,13 @@ if [ ! -e ${_TEMP_MOZC_VAL} ]; then
   exit 1
 fi
 
-cat <<EOF >>${_TEMP_MOZC_VAL}
+sudo cat <<EOF >>${_TEMP_MOZC_VAL}
 Environment="GTK_IM_MODULE=fcitx"
 Environment="QT_IM_MODULE=fcitx"
 Environment="XMODIFIERS=@im=fcitx"
 EOF
 
-echo "+-+ mozc configuration complete. +-+"
+echo "+-+-+-+ mozc configuration complete. +-+-+-+"
 
 # auto-start IME
 
@@ -62,7 +57,7 @@ fi
 
 echo "/usr/bin/fcitx-autostart" >>${_TEMP_SOMMELIERRC_VAL}
 
-echo "+-+ ime configuration complete. +-+"
+echo "+-+-+-+ ime configuration complete. +-+-+-+"
 
 # default key bindings configuration
 
@@ -81,16 +76,21 @@ EOF
 
 gsettings set org.gnome.desktop.interface gtk-key-theme "Emacs"
 
-echo "+-+ default key bindings configuration complete. +-+"
+echo "+-+-+-+ default key bindings configuration complete. +-+-+-+"
 
 # tools
 
+wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | gpg --dearmor | sudo dd of=/usr/share/keyrings/vivaldi-browser.gpg
+echo "deb [signed-by=/usr/share/keyrings/vivaldi-browser.gpg arch=$(dpkg --print-architecture)] https://repo.vivaldi.com/archive/deb/ stable main" \
+  | sudo dd of=/etc/apt/sources.list.d/vivaldi-archive.list
+
+sudo apt -y update
 sudo apt -y install \
   emacs \
   git \
   vivaldi-stable
 
-echo "+-+ tools installation complete. +-+"
+echo "+-+-+-+ tools installation complete. +-+-+-+"
 
 # place init.el (~/.emacs.d/init.el)
 
@@ -99,11 +99,11 @@ readonly _TEMP_EMACS_VAL=~/.emacs.d/init.el
 _TEMP_EMACS_DIR_VAL=$(dirname ${_TEMP_EMACS_VAL})
 readonly _TEMP_EMACS_DIR_VAL
 
-## If you don't have a setting.ini, create one.
+## If you don't have a init.el, create one.
 [ ! -e "${_TEMP_EMACS_DIR_VAL}" ] && mkdir -p "${_TEMP_EMACS_DIR_VAL}"
 [ ! -e ${_TEMP_EMACS_VAL} ] && touch ${_TEMP_EMACS_VAL}
 curl ${_TEMP_DOTFILE_VAL} > ${_TEMP_EMACS_VAL}
 
-echo "+-+ emacs configuration complete. +-+"
+echo "+-+-+-+ emacs configuration complete. +-+-+-+"
 
-echo "+-+ please reboot. +-+"
+echo "+-+-+-+ please reboot. +-+-+-+"
