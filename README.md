@@ -2,7 +2,7 @@
 
 ## 使い方
 
-以下コマンドで多分OK。随時更新予定
+以下コマンドを実行。または、通常どおり `git clone` する
 
 ```bash
 curl https://raw.githubusercontent.com/D-A-I/initialize-chromebook/main/provisioning.sh > init.sh && bash ./init.sh
