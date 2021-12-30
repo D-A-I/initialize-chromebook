@@ -19,10 +19,11 @@ sudo apt -y install \
   fonts-migmix
 
 sudo localectl set-locale LANG=ja_JP.UTF-8 LANGUAGE="ja_JP:ja"
+# shellcheck source=/dev/null
 . /etc/default/locale
 ## timezone
 sudo ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime &&
-  sudo echo Asia/Tokyo >/etc/timezone
+  echo Asia/Tokyo | sudo tee /etc/timezone >/dev/null
 
 echo "-+-+-+- localization complete. -+-+-+-"
 
@@ -36,7 +37,7 @@ if [ ! -e ${_TEMP_MOZC_VAL} ]; then
   echo "file not exists. stop the process.."
   exit 1
 fi
-sudo cat <<EOF >>${_TEMP_MOZC_VAL}
+cat <<-EOF | sudo tee -a ${_TEMP_MOZC_VAL} >/dev/null
 Environment="GTK_IM_MODULE=fcitx"
 Environment="QT_IM_MODULE=fcitx"
 Environment="XMODIFIERS=@im=fcitx"
@@ -75,8 +76,8 @@ echo "-+-+-+- default key bindings configuration complete. -+-+-+-"
 # tools
 
 wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | gpg --dearmor | sudo dd of=/usr/share/keyrings/vivaldi-browser.gpg
-echo "deb [signed-by=/usr/share/keyrings/vivaldi-browser.gpg arch=$(dpkg --print-architecture)] https://repo.vivaldi.com/archive/deb/ stable main" \
-  | sudo dd of=/etc/apt/sources.list.d/vivaldi-archive.list
+echo "deb [signed-by=/usr/share/keyrings/vivaldi-browser.gpg arch=$(dpkg --print-architecture)] https://repo.vivaldi.com/archive/deb/ stable main" |
+  sudo dd of=/etc/apt/sources.list.d/vivaldi-archive.list
 
 sudo apt -y update
 sudo apt -y install \
@@ -95,8 +96,7 @@ readonly _TEMP_EMACS_DIR_VAL
 ## If you don't have a init.el, create one.
 [ ! -e "${_TEMP_EMACS_DIR_VAL}" ] && mkdir -p "${_TEMP_EMACS_DIR_VAL}"
 [ ! -e ${_TEMP_EMACS_VAL} ] && touch ${_TEMP_EMACS_VAL}
-curl ${_TEMP_DOTFILE_VAL} > ${_TEMP_EMACS_VAL}
+curl ${_TEMP_DOTFILE_VAL} >${_TEMP_EMACS_VAL}
 
 echo "-+-+-+- emacs configuration complete. -+-+-+-"
 echo "-+-+-+- please reboot. use fcitx-configtool. -+-+-+-"
-
