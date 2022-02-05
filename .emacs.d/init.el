@@ -59,13 +59,20 @@
 (load-theme 'night-owl t)
 
 ;; powerline
-(powerline-default-theme)
+(nano-modeline-mode 1)
+;(powerline-default-theme)
+(powerline-nano-theme)
+
+;; sh
+(add-hook 'sh-mode-hook 'flycheck-mode)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages '(night-owl-theme powerline)))
+ '(package-selected-packages
+   '(nano-modeline flycheck package-utils magit google-translate night-owl-theme powerline)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
