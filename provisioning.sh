@@ -31,13 +31,13 @@ echo "-+-+-+- localization complete. -+-+-+-"
 
 sudo apt -y install fcitx-mozc
 
-readonly TEMP_MOZC_VAL=/etc/systemd/user/cros-garcon.service.d/cros-garcon-override.conf
-if [ ! -e ${TEMP_MOZC_VAL} ]; then
-  echo "${TEMP_MOZC_VAL}.."
+readonly TEMP_MOZC=/etc/systemd/user/cros-garcon.service.d/cros-garcon-override.conf
+if [ ! -e ${TEMP_MOZC} ]; then
+  echo "${TEMP_MOZC}.."
   echo "file not exists. stop the process.."
   exit 1
 fi
-cat <<-EOF | sudo tee -a ${TEMP_MOZC_VAL} >/dev/null
+cat <<-EOF | sudo tee -a ${TEMP_MOZC} >/dev/null
 Environment="GTK_IM_MODULE=fcitx"
 Environment="QT_IM_MODULE=fcitx"
 Environment="XMODIFIERS=@im=fcitx"
@@ -47,25 +47,25 @@ echo "-+-+-+- mozc configuration complete. -+-+-+-"
 
 # auto-start IME
 
-readonly TEMP_SOMMELIERRC_VAL=~/.sommelierrc
-if [ ! -e ${TEMP_SOMMELIERRC_VAL} ]; then
-  echo "${TEMP_SOMMELIERRC_VAL}.."
+readonly TEMP_SOMMELIERRC=~/.sommelierrc
+if [ ! -e ${TEMP_SOMMELIERRC} ]; then
+  echo "${TEMP_SOMMELIERRC}.."
   echo "file not exists. stop the process.."
   exit 1
 fi
-echo "/usr/bin/fcitx-autostart" >>${TEMP_SOMMELIERRC_VAL}
+echo "/usr/bin/fcitx-autostart" >>${TEMP_SOMMELIERRC}
 
 echo "-+-+-+- ime configuration complete. -+-+-+-"
 
 # default key bindings configuration
 
-readonly TEMP_GTK3_VAL=~/.config/gtk-3.0/settings.ini
-TEMP_GTK3_DIR_VAL=$(dirname ${TEMP_GTK3_VAL})
-readonly TEMP_GTK3_DIR_VAL
+readonly TEMP_GTK3=~/.config/gtk-3.0/settings.ini
+TEMP_GTK3_DIR=$(dirname ${TEMP_GTK3})
+readonly TEMP_GTK3_DIR
 ## If you don't have a setting.ini, create one.
-[ ! -e "${TEMP_GTK3_DIR_VAL}" ] && mkdir -p "${TEMP_GTK3_DIR_VAL}"
-[ ! -e ${TEMP_GTK3_VAL} ] && touch ${TEMP_GTK3_VAL}
-cat <<-EOF >>${TEMP_GTK3_VAL}
+[ ! -e "${TEMP_GTK3_DIR}" ] && mkdir -p "${TEMP_GTK3_DIR}"
+[ ! -e ${TEMP_GTK3} ] && touch ${TEMP_GTK3}
+cat <<-EOF >>${TEMP_GTK3}
 [Settings]
 gtk-key-theme-name = Emacs
 EOF
@@ -89,14 +89,14 @@ echo "-+-+-+- tools installation complete. -+-+-+-"
 
 # place init.el (~/.emacs.d/init.el)
 
-readonly TEMP_DOTFILE_VAL=https://raw.githubusercontent.com/neko-sai-en/initialize-chromebook/main/.emacs.d/init.el
-readonly TEMP_EMACS_VAL=~/.emacs.d/init.el
-TEMP_EMACS_DIR_VAL=$(dirname ${TEMP_EMACS_VAL})
-readonly TEMP_EMACS_DIR_VAL
+readonly TEMP_DOTFILE=https://raw.githubusercontent.com/cresson-cat/initialize-chromebook/main/.emacs.d/init.el
+readonly TEMP_EMACS=~/.emacs.d/init.el
+TEMP_EMACS_DIR=$(dirname ${TEMP_EMACS})
+readonly TEMP_EMACS_DIR
 ## If you don't have a init.el, create one.
-[ ! -e "${TEMP_EMACS_DIR_VAL}" ] && mkdir -p "${TEMP_EMACS_DIR_VAL}"
-[ ! -e ${TEMP_EMACS_VAL} ] && touch ${TEMP_EMACS_VAL}
-curl ${TEMP_DOTFILE_VAL} >${TEMP_EMACS_VAL}
+[ ! -e "${TEMP_EMACS_DIR}" ] && mkdir -p "${TEMP_EMACS_DIR}"
+[ ! -e ${TEMP_EMACS} ] && touch ${TEMP_EMACS}
+curl ${TEMP_DOTFILE} >${TEMP_EMACS}
 
 echo "-+-+-+- emacs configuration complete. -+-+-+-"
 echo "-+-+-+- please reboot. use fcitx-configtool. -+-+-+-"
